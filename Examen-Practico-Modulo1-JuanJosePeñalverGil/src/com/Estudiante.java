@@ -134,9 +134,10 @@ public Estudiante() {
 		int c2=getSegundoApellido().compareTo(o.getSegundoApellido());
 		if(c2!=0)return c2;
 		int c3=getNombre().compareTo(o.getNombre());
-		return c3;
-				
-	}
+		if(c3!=0)return c3;
+		int c4=getFechaAltaGym().compareTo(o.getFechaAltaGym());
+		return c4;
+}
 	
 	
 

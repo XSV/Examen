@@ -1,9 +1,12 @@
 package com;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.stream.Collectors;
 import com.Estudiante.Facultades;
 import com.Estudiante.Sesion;
@@ -19,8 +22,7 @@ public class Demo {
 		*  1. Recorrer el listado de estudiantes y obtener un mapa que contenga el nombre y los apellidos de cada estudiante con el
 		*  total de días que han asistido al gimnasio desde su fecha de matriculación. 
 		************************/
-		
-		/**/
+		/*/
 		Map<String, Double> lJ;
 		lJ=new HashMap<>();
 		lJ=estudiantes.stream().collect(Collectors.groupingBy(Estudiante::getNComplet,
@@ -37,7 +39,7 @@ public class Demo {
 		Long dias=entry.getValue();
 		/**/
 			
-		/*/	
+		/**/	
 			System.out.println("Nombre Completo: "+nombreC+"  Dias Asistidos: "+dias);
 		/**/
 		}
@@ -52,7 +54,7 @@ public class Demo {
 for(Estudiante.Sesion s:Estudiante.Sesion.values())
 	m.put(s,estudiantes.stream().filter(e->e.getSesion().equals(s)).collect(Collectors.toList()));
 	for(Map.Entry<Estudiante.Sesion, List<Estudiante>> entry : m.entrySet()) {
-				/*/
+				/**/
 		System.out.println("Sesion: "+entry.getKey());
 		Estudiante.pintarOrdenado(entry.getValue());
 				/**/
@@ -82,24 +84,55 @@ for(Estudiante.Sesion s:Estudiante.Sesion.values())
 		/****************************
 		 * 4. Obtener un mapa con el estudiante que practica mas horas de deporte diariamente por facultad.
 		******************************/
-	Map<Facultades,Estudiante>mapFyE;
-	mapFyE=new HashMap<>();
+	//Creo un mapa con las facultades y el mayor dia de asistencia al gym
+	Map<Facultades, Long>mapFacultadLong;
+	mapFacultadLong=new HashMap<>();
+	for(Estudiante.Facultades fac:Estudiante.Facultades.values()) {
+		mapFacultadLong.put(fac,estudiantes.stream().filter(a -> a.getFacultad() == fac)
+				.mapToLong(Estudiante::getDiasAsistenciaGym).max().getAsLong());
+}
+	//Creo un mapa con las facultades y el estudiante de mayor dias de asistencia al gym
+	Map<Facultades,Estudiante>mapFacultadEstudiante;
+	mapFacultadEstudiante=new HashMap<>();
+	for (Estudiante e:estudiantes) {
+		if(e.getHorasDiaGym()==mapFacultadLong.get(e.getFacultad()))
+			mapFacultadEstudiante.put(e.getFacultad(),e);
+	}
 	
-	Map<Facultades, Double>mapFyD;
-	mapFyD=new HashMap<>();
-	/*
-	mapFyD=estudiantes.stream().collect(Collectors.groupingBy(Estudiante::getFacultad,
-			
-			);
-	*/
-	/*
-	mapFyE=estudiantes.stream()
-			.collect(Collectors.groupingBy(Estudiante::getFacultad,
-				Collectors.maxBy(Estudiante::getHorasDiaGym))
-					
-					);
-*/
 
+	for(Entry entry:mapFacultadEstudiante.entrySet()) {
+		System.out.println("Facultad de "+entry.getKey()+": Estudiante: "+(entry.getValue()));
+	}
+	mapFacultadEstudiante.forEach((fac,es)->System.out.println("Facultad de "+fac+": Estudiante: "+es.datos()));
+
+
+	/****************************
+	 * 5. Obtener una Coleccion que almacene, por facultad, el total de horas dedicadas a la practica del deporte
+	 *  por los estudiantes que llevan mas de un año de existencia
+	******************************/
+	
+	//Creo un mapa de estudiantes ordenados con las facultades y el mayor dia de asistencia al gym
+		Map<Facultades, List<Estudiante>>mapFacultadEstudianteAño;
+		mapFacultadEstudianteAño=new HashMap<>();
+		mapFacultadEstudianteAño=estudiantes.stream().filter(e->e.getDiasAsistenciaGym()>365).collect(Collectors.groupingBy(Estudiante::getFacultad));
+	/*	
+		Collections.sort(mapFacultadEstudianteAño.values(),new Comparator <Estudiante>() {
+		    public int compare(Estudiante o1, Estudiante o2) {
+		    	return (o2.getHorasDiaGym() < o1.getHorasDiaGym()?1:0);
+		    	}
+		    });
+		*/
+		
+		for(Estudiante.Facultades fac:mapFacultadEstudianteAño.keySet()) {
+			for(Estudiante es:mapFacultadEstudianteAño.get(fac)) {
+				System.out.println("Facultad de "+fac+" Estudiante: "+es.getNComplet()+" "+es.getDiasAsistenciaGym());
+			}}
+		
+
+	
+	
+	
+	
 }
 								
 		/*aplicar para todos los anteriores
