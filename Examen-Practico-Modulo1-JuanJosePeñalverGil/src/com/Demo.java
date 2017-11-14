@@ -4,12 +4,16 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
+
+import javax.swing.SortOrder;
+
 import com.Estudiante.Facultades;
 import com.Estudiante.Sesion;
 
@@ -135,16 +139,43 @@ for(Estudiante.Sesion s:Estudiante.Sesion.values())
 		mapFacultadMasHorasInverso=new TreeMap<>(java.util.Collections.reverseOrder());
 		mapFacultadMasHorasInverso.putAll(mapFacultadMasHoras);
 		
-		System.out.println("Horas ordenadas");
+		System.out.println("Horas ordenadas por clave descencendente");
 		for (Map.Entry<Estudiante.Facultades,Integer> entry : mapFacultadMasHorasInverso.entrySet()) {
 			Facultades key=entry.getKey();
 			Integer value=entry.getValue();
 			System.out.println(key+" a "+value);
 		}
 		
+		CompararPorValor criterioDeComparacion;
+		criterioDeComparacion=new CompararPorValor(mapFacultadMasHoras);
 		
 		SortedMap<Facultades, Integer> mapFacultadOrdenadasPorHoras;
-		mapFacultadOrdenadasPorHoras=new TreeMap<>();
+		mapFacultadOrdenadasPorHoras=new TreeMap<>(criterioDeComparacion);
+		
+		mapFacultadOrdenadasPorHoras.putAll(mapFacultadMasHoras);
+		
+		System.out.println("Horas ordenadas por valor descencendente");
+		for (Map.Entry<Estudiante.Facultades,Integer> entry : mapFacultadOrdenadasPorHoras.entrySet()) {
+			Facultades key=entry.getKey();
+			Integer value=entry.getValue();
+			System.out.println(key+" a "+value);
+		}
+		
+		Map<Facultades, Integer>mapOrdenadoPorValores;
+		mapOrdenadoPorValores=mapFacultadMasHoras.
+		entrySet().
+		stream().
+		sorted(
+				Entry.comparingByValue(
+						(o1,o2)->{return o2.compareTo(o1);}
+						)
+				).collect(Collectors.toMap(Entry::getKey,Entry::getValue, (e1,e2)->e1,LinkedHashMap::new));
+		System.out.println("Horas ordenadas por valor descencendente2");
+		for (Map.Entry<Estudiante.Facultades,Integer> entry : mapOrdenadoPorValores.entrySet()) {
+			Facultades key=entry.getKey();
+			Integer value=entry.getValue();
+			System.out.println(key+" a "+value);
+		}
 		
 		/*	
 		Collections.sort(mapFacultadEstudianteAño.values(),new Comparator <Estudiante>() {
