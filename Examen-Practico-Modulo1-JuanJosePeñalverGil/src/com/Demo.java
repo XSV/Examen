@@ -6,6 +6,8 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.SortedMap;
+import java.util.TreeMap;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
 import com.Estudiante.Facultades;
@@ -59,7 +61,6 @@ for(Estudiante.Sesion s:Estudiante.Sesion.values())
 		Estudiante.pintarOrdenado(entry.getValue());
 				/**/
 			}
-			
 			
 			/********************************
 			 * 3. Almacenar en una Colección Map los estudiantes, agrupados por Facultad y por horario de asistencia al gimnasio
@@ -115,7 +116,37 @@ for(Estudiante.Sesion s:Estudiante.Sesion.values())
 		Map<Facultades, List<Estudiante>>mapFacultadEstudianteAño;
 		mapFacultadEstudianteAño=new HashMap<>();
 		mapFacultadEstudianteAño=estudiantes.stream().filter(e->e.getDiasAsistenciaGym()>365).collect(Collectors.groupingBy(Estudiante::getFacultad));
-	/*	
+	
+		Map<Facultades, Integer>mapFacultadMasHoras;
+		mapFacultadMasHoras=new HashMap<>();
+		//mapFacultadMasHoras=estudiantes.stream().filter(e->e.getDiasAsistenciaGym()>365).collect(Collectors.groupingBy(Estudiante::getFacultad));
+		mapFacultadMasHoras.put(Estudiante.Facultades.FISICA, 300);
+		mapFacultadMasHoras.put(Estudiante.Facultades.MATEMATICAS, 200);
+		mapFacultadMasHoras.put(Estudiante.Facultades.INFORMATICA, 100);
+		
+		System.out.println("horas sin ordenar");
+		for (Map.Entry<Estudiante.Facultades,Integer> entry : mapFacultadMasHoras.entrySet()) {
+			Facultades key=entry.getKey();
+			Integer value=entry.getValue();
+			System.out.println(key+" a "+value);
+		}
+		
+		SortedMap<Facultades, Integer> mapFacultadMasHorasInverso;
+		mapFacultadMasHorasInverso=new TreeMap<>(java.util.Collections.reverseOrder());
+		mapFacultadMasHorasInverso.putAll(mapFacultadMasHoras);
+		
+		System.out.println("Horas ordenadas");
+		for (Map.Entry<Estudiante.Facultades,Integer> entry : mapFacultadMasHorasInverso.entrySet()) {
+			Facultades key=entry.getKey();
+			Integer value=entry.getValue();
+			System.out.println(key+" a "+value);
+		}
+		
+		
+		SortedMap<Facultades, Integer> mapFacultadOrdenadasPorHoras;
+		mapFacultadOrdenadasPorHoras=new TreeMap<>();
+		
+		/*	
 		Collections.sort(mapFacultadEstudianteAño.values(),new Comparator <Estudiante>() {
 		    public int compare(Estudiante o1, Estudiante o2) {
 		    	return (o2.getHorasDiaGym() < o1.getHorasDiaGym()?1:0);
@@ -125,7 +156,7 @@ for(Estudiante.Sesion s:Estudiante.Sesion.values())
 		
 		for(Estudiante.Facultades fac:mapFacultadEstudianteAño.keySet()) {
 			for(Estudiante es:mapFacultadEstudianteAño.get(fac)) {
-				System.out.println("Facultad de "+fac+" Estudiante: "+es.getNComplet()+" "+es.getDiasAsistenciaGym());
+				//System.out.println("Facultad de "+fac+" Estudiante: "+es.getNComplet()+" "+es.getDiasAsistenciaGym());
 			}}
 		
 
